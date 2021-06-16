@@ -3,6 +3,7 @@ package kata;
 import org.junit.*;
 import static org.junit.Assert.*;
 
+
 public class StringCalculatorTests {
 
 	static StringCalculator ob;
@@ -11,11 +12,35 @@ public class StringCalculatorTests {
 	{
 		ob = new StringCalculator();
 	}
+	@Before
+	public void emptyList()
+	{
+		ob.delimiterslist.clear();
+	}
+	
+	@Test
+	public void delimiters()
+	{
+		System.out.println("\nTest for delimiters() function\n");
+		ob.delimiterslist.clear();
+		assertEquals("",ob.delimiters("//"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		ob.delimiterslist.clear();
+		assertEquals("",ob.delimiters("//;\n"));
+		assertTrue(ob.delimiterslist.contains(";"));
+		ob.delimiterslist.clear();
+		assertEquals("1",ob.delimiters("//;\n1"));
+		assertTrue(ob.delimiterslist.contains(";"));
+		ob.delimiterslist.clear();
+		assertEquals("1,2,3",ob.delimiters("1,2,3"));
+		assertTrue(ob.delimiterslist.isEmpty());
+	}
+	
 	
 	@Test
 	public void task_1_2_testAdd()
 	{
-		System.out.println("\nTest-1\n");
+		System.out.println("\nTest-1&2\n");
 		assertEquals(0,ob.add(""));
 		assertEquals(32,ob.add("32"));
 		assertEquals(3,ob.add("1,2"));
@@ -28,7 +53,7 @@ public class StringCalculatorTests {
 	@Test
 	public void task_3_doubleDelimiter()
 	{
-		System.out.println("\nTest-2\n");
+		System.out.println("\nTest-3\n");
 		assertEquals(0,ob.add("\n"));
 		assertEquals(0,ob.add(","));
 		assertEquals(0,ob.add("\n2"));
@@ -37,5 +62,24 @@ public class StringCalculatorTests {
 		assertEquals(6,ob.add("1\n2,3"));
 		assertEquals(31,ob.add("1,2\n3,4,5,6\n10"));
 		
+	}
+	
+	
+	@Test
+	public void task_4_differentDelimiters()
+	{
+		System.out.println("\nTest-4\n");
+		assertEquals(0,ob.add("//:1"));
+		assertEquals(0,ob.add("//:\n:1"));
+		assertEquals(0,ob.add("//:\n1:"));
+		assertEquals(3,ob.add("//;\n1;2"));
+		assertEquals(21,ob.add("//;\n1;2,3,4\n5\n6"));
+		assertEquals(0,ob.add("//;\n1;2-3"));
+		
+	}
+	@AfterClass
+	public static void deleteObj()
+	{
+		ob=null;
 	}
 }
