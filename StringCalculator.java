@@ -2,16 +2,28 @@ package kata;
 
 import java.util.*;
 
-public class StringCalculator {
+
+class NegativeNumber extends Exception
+{  
+	int num;
+	NegativeNumber(int num)
+	{  
+		this.num=num;
+	}  
+}  
+
+public class StringCalculator 
+{
 	
 	ArrayList<String> delimiterslist = new ArrayList<>();
 
 	public static void main (String args[])
 	{
-		String numbers = "2,";
+		String numbers = "//;\n1;2,3,4;1005\n5\n6";
 		StringCalculator obj =new StringCalculator();	
-		int res= obj.add(numbers);
-		System.out.println(res);
+		int res=0;
+		res= obj.add(numbers);
+		System.out.println("\nThe Result is "+res);
 	}
 	
 	public String delimiters(String numbers)
@@ -74,7 +86,7 @@ public class StringCalculator {
 			return "";
 		}
 			
-	}
+}
 	
 	public int add(String numbers) 
 	{
@@ -87,9 +99,9 @@ public class StringCalculator {
 			delimits=delimits+delimiterslist.get(i);
 		}
 		delimits="["+delimits+"]"+"+";
-		int result=0;
+		int result=0,negative=0;
 		int len= numbers.length()-1;
-		System.out.println(len);
+		ArrayList<Integer> negatives=new ArrayList<> ();
 		if(len>=0)
 		{
 			
@@ -102,13 +114,22 @@ public class StringCalculator {
 			 {
 				 try
 					{
-					result = result+Integer.parseInt(numbers);
+					 	int num=Integer.parseInt(numbers);
+					 	if(num<0)
+					 		throw new NegativeNumber(num);
+					 	else if(num<=1000)
+					 		result = result+num;
 					}
 					catch(NumberFormatException e)
 					{
 						System.out.println("Number Format Exception Occured: Number is missing");
 						return 0;
 					}
+				 	catch(NegativeNumber e)
+				 	{
+				 		negative=1;
+				 		negatives.add(e.num);
+				 	}
 			 }
 			 else
 			 {
@@ -117,17 +138,39 @@ public class StringCalculator {
 				{
 					try
 					{
-					result = result+Integer.parseInt(adders[i]);
+						int num=Integer.parseInt(adders[i]);
+						if(num<0)
+					 		throw new NegativeNumber(num);
+						else if(num<=1000)
+							result = result+num;
 					}
 					catch(NumberFormatException e)
 					{
 						System.out.println("Number Format Exception Occured: Number is missing");
 						return 0;
 					}
+					catch(NegativeNumber e)
+				 	{
+						negative=1;
+						negatives.add(e.num);
+				 		
+				 	}
 				}
 			 }
 		}
-		System.out.println("The Result is "+result);
-		return result;
+		if(negative==0)
+		{
+			return result;
+		}
+		else
+		{
+			System.out.print("Negatives Not Allowed: ");
+			for(int i=0;i<negatives.size();i++)
+			{
+				System.out.print(negatives.get(i)+" ");
+			}
+			return 0;
+		}
+		
 	}
 }
