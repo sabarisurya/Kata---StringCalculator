@@ -2,21 +2,25 @@ package kata;
 
 import org.junit.*;
 import static org.junit.Assert.*;
+import java.util.*;
 
 
 public class StringCalculatorTests {
 
 	static StringCalculator ob;
+	String[] dlist = {"@@","##","**","..","??","++","^^"}; 
 	@BeforeClass
 	public static void creatObj()
 	{
 		ob = new StringCalculator();
+		
 	}
 	@Before
 	public void emptyList()
 	{
 		ob.delimiterslist.clear();
 	}
+	
 	
 	@Test
 	public void delimiters()
@@ -34,6 +38,55 @@ public class StringCalculatorTests {
 		ob.delimiterslist.clear();
 		assertEquals("1,2,3",ob.delimiters("1,2,3"));
 		assertTrue(ob.delimiterslist.isEmpty());
+	}
+	
+	
+	@Test
+	public void lengthyDelimiters()
+	{
+		System.out.println("\nTest for any length delimiters() function\n");
+		ob.delimiterslist.clear();
+		assertEquals("",ob.delimiters("//[]"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		ob.delimiterslist.clear();
+		assertEquals("",ob.delimiters("//[**]"));
+		assertTrue(ob.delimiterslist.contains("**"));
+		ob.delimiterslist.clear();
+		assertEquals("",ob.delimiters("//[**][$$$][&&&&&&]"));
+		assertTrue(ob.delimiterslist.contains("**"));
+		assertTrue(ob.delimiterslist.contains("$$$"));
+		assertTrue(ob.delimiterslist.contains("&&&&&&"));
+		ob.delimiterslist.clear();
+		System.out.println("Success");
+		assertEquals("**1,2\\n3**4@@@6**&",ob.delimiters("//[**][@@@@]\n**1,2\\n3**4@@@6**&"));
+		assertTrue(ob.delimiterslist.contains("**"));
+		assertTrue(ob.delimiterslist.contains("@@@@"));
+	}
+	
+	
+	@Test
+	public void changeDelimiters()
+	{
+		
+		System.out.println("\nTest for any length delimiters() function\n");
+		
+		ob.delimiterslist.clear();
+		ob.delimiterslist.addAll(Arrays.asList(dlist));
+		assertEquals("1,2",ob.changeDelimiters("1**2"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		ob.delimiterslist.addAll(Arrays.asList(dlist));
+		assertEquals(",12",ob.changeDelimiters("**12"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		ob.delimiterslist.addAll(Arrays.asList(dlist));
+		assertEquals("12,",ob.changeDelimiters("12**"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		ob.delimiterslist.addAll(Arrays.asList(dlist));
+		assertEquals("1,2,3,4,5,6,7,8",ob.changeDelimiters("1**2@@3..4++5??6^^7##8"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		ob.delimiterslist.addAll(Arrays.asList(dlist));
+		assertEquals("-1,0\n1,*2,3,4,%5,6,7,8",ob.changeDelimiters("-1,0\n1***2@@3..4++%5??6^^7##8"));
+		assertTrue(ob.delimiterslist.isEmpty());
+		
 	}
 	
 	
@@ -98,6 +151,37 @@ public class StringCalculatorTests {
 		assertEquals(21,ob.add("//;\n1;2,,2999;3,4\n5\n6"));
 		
 	}
+	@Test
+	public void task_7_lengthyDelimiter()
+	{
+		System.out.println("\nTest-7\n");
+		assertEquals(0,ob.add("//[]\n"));
+		assertEquals(1,ob.add("//[]\n1"));
+		assertEquals(6,ob.add("//[]\n1,2\n3"));
+		assertEquals(0,ob.add("//[]\n,1,2"));
+		assertEquals(0,ob.add("//[]\n1,2,3,4,"));
+		assertEquals(0,ob.add("//[&&]\n1&&&2,3,4"));
+		assertEquals(0,ob.add("//[&&]\n&&1,2,3,4"));
+		assertEquals(0,ob.add("//[##]1,2,3,4##\n"));
+		assertEquals(21,ob.add("//[]\n1,2\n3\n4,5\n6"));
+		assertEquals(21,ob.add("//[**]\n1**2**3,4,5\n6"));
+		assertEquals(16,ob.add("//[@@@@@@]\n1@@@@@@2@@@@@@3,4\n6"));
+	}
+	@Test
+	public void task_8_9_multipleDelimiter()
+	{
+		System.out.println("\nTest-7\n");
+		assertEquals(0,ob.add("//[][][]\n"));
+		assertEquals(0,ob.add("//[*][&]\n*1,2&3"));
+		assertEquals(0,ob.add("//[*][&]\n1,2*3&"));
+		assertEquals(0,ob.add("//[**][&&]\n1,2**3&&4\n5--6"));
+		assertEquals(15,ob.add("//[*][&]\n1,2*3&4\n5"));
+		assertEquals(21,ob.add("//[**][&&]\n1,2**3&&4\n5**6"));
+		assertEquals(45,ob.add("//[**][&&][..][???][++]\n1,2**3&&4\n5&&6..7???8++9"));
+		
+	}
+	
+	
 	@AfterClass
 	public static void deleteObj()
 	{
